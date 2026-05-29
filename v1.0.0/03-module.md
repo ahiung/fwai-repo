@@ -78,6 +78,12 @@ Buatkan di `resources/views/[nama_entitas_huruf_kecil]/`:
 *   Berikan blok kode definisi Route (Group) untuk di-paste ke `config/routes.php`.
 *   Sertakan juga instruksi singkat cara mendaftarkan Service baru ke `config/dependencies.php`.
 
+**H. Integrasi Matriks RBAC (WAJIB)**
+*   Daftarkan secara manual baris baru untuk hak akses modul (BACA, TAMBAH, UBAH, HAPUS) ke dalam tabel Matriks Otorisasi Granular di berkas formulir peran:
+    1.  `resources/views/roles/add.twig`
+    2.  `resources/views/roles/edit.twig`
+    Hal ini penting agar izin (permission) baru tersebut dapat diatur dan dicentang oleh peran non-Superadmin lainnya.
+
 ## Execution Rules
 *   **Contextual Yapping (Allowed):** AI diperbolehkan memberikan penjelasan singkat mengenai cara mengintegrasikan modul, cara memasang route, cara mendaftarkan Service di DI container, dsb.
 *   **Complete Code:** Kode harus utuh dan fungsional.
