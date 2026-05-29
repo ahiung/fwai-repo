@@ -1,0 +1,169 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Manajemen User{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Manajemen User</span>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Action Header -->
+    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 select-none">
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 font-display">Daftar Pengguna Sistem</h2>
+            <p class="text-xs text-gray-400 mt-1">Kelola data akun administrator, staf operasional, beserta penetapan peran mereka.</p>
+        </div>
+        {% if can('add_users') %}
+            <a href="{{ base_path }}/users/add" class="inline-flex items-center space-x-2 btn-forest-primary py-2.5 px-5 rounded-2xl shadow-md hover:shadow-lg focus:outline-none transition-all text-xs tracking-wide">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+                <span>Tambah User</span>
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Table Grid Content -->
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100 text-gray-400 font-semibold uppercase text-[10px] tracking-wider select-none">
+                        <th class="py-4 px-6">Identitas User</th>
+                        <th class="py-4 px-6">Username</th>
+                        <th class="py-4 px-6">Alamat Email</th>
+                        <th class="py-4 px-6">Peran Pengguna</th>
+                        <th class="py-4 px-6">Tanggal Dibuat</th>
+                        <th class="py-4 px-6 text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for user in users %}
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-4 px-6 flex items-center space-x-3">
+                                <div class="h-10 w-10 rounded-2xl bg-[var(--forest-mist)] text-[var(--forest-medium)] flex items-center justify-center font-bold text-sm font-display select-none border border-[var(--forest-light)]/20">
+                                    {{ user.name | slice(0, 2) | upper }}
+                                </div>
+                                <div>
+                                    <span class="font-bold text-gray-900 block font-display">{{ user.name }}</span>
+                                    <span class="text-[10px] text-gray-400">ID: #{{ user.id }}</span>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6 font-semibold text-gray-700">
+                                {{ user.username }}
+                            </td>
+                            <td class="py-4 px-6 text-gray-500 font-medium">
+                                {{ user.email }}
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold {% if user.role.id == 1 %} bg-[var(--forest-mist)] text-[var(--forest-darkest)] border-[var(--forest-light)] {% elseif user.role.id == 2 %} bg-[var(--forest-mist)] text-[var(--forest-medium)] border-[var(--forest-light)]/50 {% else %} bg-gray-50 text-gray-500 border-gray-200 {% endif %} uppercase tracking-wide border select-none">
+                                    {{ user.role ? user.role.name : 'Belum Ditentukan' }}
+                                </span>
+                            </td>
+                            <td class="py-4 px-6 text-gray-400 font-medium">
+                                {{ format_tanggal(user.created_at, 'd-m-Y') }}
+                            </td>
+                            <td class="py-4 px-6 text-right">
+                                <div class="flex items-center justify-end space-x-1">
+                                    {% if can('edit_users') %}
+                                        <a href="{{ base_path }}/users/edit/{{ user.id }}" class="p-2 rounded-xl text-gray-500 hover:bg-[var(--forest-mist)] hover:text-[var(--forest-medium)] transition-all" title="Ubah User">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                    {% if can('delete_users') and user.id != 1 and user.id != session.user.id %}
+                                        <a href="{{ base_path }}/users/delete/{{ user.id }}" 
+                                           onclick="return confirm('Apakah Anda yakin ingin menghapus user ini? Akun akan dinonaktifkan.');"
+                                           class="p-2 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all" title="Hapus User">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="py-12 px-6 text-center text-gray-400 font-semibold">
+                                Belum ada user terdaftar.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Dynamic Responsive Pagination Controls -->
+        {% if paginator.hasPages() %}
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                <!-- Mobile Prev/Next -->
+                <div class="flex-1 flex justify-between sm:hidden">
+                    {% if paginator.onFirstPage() %}
+                        <span class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold text-gray-300 bg-white select-none">Sebelumnya</span>
+                    {% else %}
+                        <a href="{{ paginator.previousPageUrl() }}" onclick="window.showLoading()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 bg-white hover:bg-gray-50 transition-all">Sebelumnya</a>
+                    {% endif %}
+
+                    {% if paginator.hasMorePages() %}
+                        <a href="{{ paginator.nextPageUrl() }}" onclick="window.showLoading()" class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 bg-white hover:bg-gray-50 transition-all">Selanjutnya</a>
+                    {% else %}
+                        <span class="px-4 py-2 border border-gray-200 rounded-xl text-xs font-bold text-gray-300 bg-white select-none">Selanjutnya</span>
+                    {% endif %}
+                </div>
+
+                <!-- Desktop Details -->
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between select-none">
+                    <div>
+                        <p class="text-xs text-gray-400">
+                            Menampilkan <span class="font-bold text-gray-700">{{ paginator.firstItem() }}</span> hingga <span class="font-bold text-gray-700">{{ paginator.lastItem() }}</span> dari <span class="font-bold text-gray-700">{{ paginator.total() }}</span> data
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-xl shadow-sm -space-x-px" aria-label="Pagination">
+                            <!-- Prev -->
+                            {% if paginator.onFirstPage() %}
+                                <span class="relative inline-flex items-center px-3 py-2 rounded-l-xl border border-gray-200 bg-white text-xs font-bold text-gray-300 select-none">
+                                    &lsaquo;
+                                </span>
+                            {% else %}
+                                <a href="{{ paginator.previousPageUrl() }}" onclick="window.showLoading()" class="relative inline-flex items-center px-3 py-2 rounded-l-xl border border-gray-200 bg-white text-xs font-bold text-gray-500 hover:bg-gray-50 transition-all">
+                                    &lsaquo;
+                                </a>
+                            {% endif %}
+
+                            <!-- Page Numbers -->
+                            {% for i in 1..paginator.lastPage() %}
+                                {% if i == paginator.currentPage() %}
+                                    <span class="z-10 bg-[var(--forest-mist)] border-[var(--forest-light)] text-[var(--forest-medium)] relative inline-flex items-center px-3.5 py-2 border text-xs font-bold">
+                                        {{ i }}
+                                    </span>
+                                {% else %}
+                                    <a href="{{ paginator.url(i) }}" onclick="window.showLoading()" class="bg-white border-gray-200 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-3.5 py-2 border text-xs font-bold transition-all">
+                                        {{ i }}
+                                    </a>
+                                {% endif %}
+                            {% endfor %}
+
+                            <!-- Next -->
+                            {% if paginator.hasMorePages() %}
+                                <a href="{{ paginator.nextPageUrl() }}" onclick="window.showLoading()" class="relative inline-flex items-center px-3 py-2 rounded-r-xl border border-gray-200 bg-white text-xs font-bold text-gray-500 hover:bg-gray-50 transition-all">
+                                    &rsaquo;
+                                </a>
+                            {% else %}
+                                <span class="relative inline-flex items-center px-3 py-2 rounded-r-xl border border-gray-200 bg-white text-xs font-bold text-gray-300 select-none">
+                                    &rsaquo;
+                                </span>
+                            {% endif %}
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

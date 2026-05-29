@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk ke Sistem - Framework AI</title>
+    
+    <!-- Local Vendor Stylesheets -->
+    <link rel="stylesheet" href="{{ base_path }}/assets/vendor/tailwind.min.css">
+    
+    <!-- Google Fonts Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --forest-darkest: #16221f;     /* Deep spruce canopy */
+            --forest-dark: #1d2c28;        /* Evergreen pine shadow */
+            --forest-medium: #2e433c;      /* Moss & Juniper green */
+            --forest-accent: #3d5a50;      /* Sage mist */
+            --forest-light: #8fa89b;       /* Pale lichen green */
+            --forest-mist: #eef3f0;        /* Soft Nordic morning mist */
+            --nordic-fjord: #1f2d3d;       /* Icy fjord dark blue */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--forest-darkest) 0%, var(--nordic-fjord) 50%, var(--forest-dark) 100%);
+        }
+        
+        h1, h2, .font-display {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Premium Glassmorphism Card Style with soft Lichen highlight */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.90);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(143, 168, 155, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(11, 22, 19, 0.5);
+        }
+
+        /* Focus borders using sage mist */
+        .input-forest:focus {
+            border-color: var(--forest-light);
+            box-shadow: 0 0 0 3px rgba(143, 168, 155, 0.25);
+        }
+
+        .btn-forest {
+            background: linear-gradient(135deg, var(--forest-medium) 0%, var(--forest-dark) 100%);
+            box-shadow: 0 4px 12px rgba(29, 44, 40, 0.35);
+            transition: all 0.25s ease;
+        }
+        .btn-forest:hover {
+            background: linear-gradient(135deg, var(--forest-accent) 0%, var(--forest-medium) 100%);
+            box-shadow: 0 6px 16px rgba(29, 44, 40, 0.45);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+<body class="h-full flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md">
+        <!-- Logo Header Branding -->
+        <div class="flex flex-col items-center mb-8 select-none">
+            <div class="h-12 w-12 rounded-2xl bg-white text-gray-800 flex items-center justify-center shadow-2xl mb-3 border border-gray-100">
+                <!-- Icon Brand with lichen theme -->
+                <div class="h-7 w-7 rounded-lg bg-gradient-to-tr from-green-800 to-green-600 flex items-center justify-center shadow-md">
+                    <span class="text-white font-extrabold font-display text-sm">F</span>
+                </div>
+            </div>
+            <h1 class="text-white font-extrabold text-2xl tracking-wider font-display">NORDIC<span class="text-green-300">FOREST</span></h1>
+            <p class="text-gray-300 text-xs mt-1">Enterprise Grade Layered Boilerplate</p>
+        </div>
+
+        <!-- Glassmorphism Container Card -->
+        <div class="glass-card rounded-3xl p-8 relative overflow-hidden">
+            <!-- Blurred background highlights inside card (Mossy aura) -->
+            <div class="absolute -top-10 -right-10 w-24 h-24 bg-green-200 rounded-full blur-2xl opacity-20"></div>
+            <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-blue-200 rounded-full blur-2xl opacity-20"></div>
+
+            <h2 class="text-xl font-bold text-gray-900 text-center mb-1">Selamat Datang</h2>
+            <p class="text-gray-500 text-xs text-center mb-8">Silakan masuk menggunakan akun administrator Anda.</p>
+
+            <form action="{{ base_path }}/login" method="POST" autocomplete="off">
+                <!-- Username Input Field -->
+                <div class="mb-5">
+                    <label for="username" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Username</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <input type="text" name="username" id="username" value="{{ old.username }}" required
+                               class="w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 bg-white/60 focus:outline-none input-forest text-sm transition-all text-gray-800"
+                               placeholder="Masukkan username Anda">
+                    </div>
+                    {% if errors.username %}
+                        <p class="text-red-600 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.username }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Password Input Field -->
+                <div class="mb-8">
+                    <label for="password" class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">Password</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <input type="password" name="password" id="password" required
+                               class="w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 bg-white/60 focus:outline-none input-forest text-sm transition-all text-gray-800"
+                               placeholder="Masukkan password Anda">
+                    </div>
+                    {% if errors.password %}
+                        <p class="text-red-600 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.password }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Submit Button with Nordic Theme -->
+                <button type="submit"
+                        class="w-full text-white font-bold py-3.5 px-4 rounded-2xl focus:outline-none btn-forest text-sm tracking-wide">
+                    Masuk ke Dashboard
+                </button>
+            </form>
+        </div>
+
+        <p class="text-center text-gray-400 text-xs mt-6">
+            &copy; 2026 Nordic Forest AI. Hak cipta dilindungi.
+        </p>
+    </div>
+
+    <!-- Local SweetAlert2 & Global App Scripts -->
+    <script src="{{ base_path }}/assets/vendor/sweetalert2.all.min.js"></script>
+    <script src="{{ base_path }}/assets/js/app.js"></script>
+
+    <!-- Trigger Toast notifications on authentication failures -->
+    {% set successFlash = flash.getMessage('success') %}
+    {% if successFlash is not empty %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: "{{ successFlash[0] }}",
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                }
+            });
+        </script>
+    {% endif %}
+
+    {% set errorFlash = flash.getMessage('error') %}
+    {% if errorFlash is not empty %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'error',
+                        title: "{{ errorFlash[0] }}",
+                        showConfirmButton: false,
+                        timer: 4000,
+                        timerProgressBar: true
+                    });
+                }
+            });
+        </script>
+    {% endif %}
+</body>
+</html>

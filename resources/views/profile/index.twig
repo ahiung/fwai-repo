@@ -1,0 +1,148 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Profil Saya{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Profil Saya</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header Banner -->
+    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col md:flex-row items-center md:justify-between gap-4 select-none">
+        <div class="flex items-center gap-4">
+            <div class="h-16 w-16 rounded-3xl bg-forest-gradient text-white flex items-center justify-center font-extrabold text-2xl shadow-lg shadow-green-900/10 font-display">
+                {{ user.name | slice(0, 2) | upper }}
+            </div>
+            <div class="text-center md:text-left">
+                <h2 class="text-xl font-bold text-gray-900 font-display">{{ user.name }}</h2>
+                <p class="text-xs text-gray-400 mt-1 capitalize">{{ session.user.role_name }} &bull; {{ user.email }}</p>
+            </div>
+        </div>
+        <div class="px-4 py-1.5 bg-[var(--forest-mist)] text-[var(--forest-medium)] rounded-full text-xs font-bold uppercase tracking-wider border border-[var(--forest-light)]/20">
+            Akun Aktif
+        </div>
+    </div>
+
+    <!-- Main Settings Form -->
+    <form action="{{ base_path }}/profile" method="POST" autocomplete="off" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Left Column: Details -->
+        <div class="md:col-span-2 bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-5">
+            <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3">Informasi Akun</h3>
+
+            <!-- Name Input -->
+            <div>
+                <label for="name" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Lengkap</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                    </div>
+                    <input type="text" name="name" id="name" value="{{ old.name | default(user.name) }}" required
+                           class="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                           placeholder="Masukkan nama lengkap">
+                </div>
+                {% if errors.name %}
+                    <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                        <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        {{ errors.name }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Email Input -->
+            <div>
+                <label for="email" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Alamat Email</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                    <input type="email" name="email" id="email" value="{{ old.email | default(user.email) }}" required
+                           class="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                           placeholder="nama@email.com">
+                </div>
+                {% if errors.email %}
+                    <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                        <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                        {{ errors.email }}
+                    </p>
+                {% endif %}
+            </div>
+
+            <!-- Username View-only (Security best practice: username cannot be modified once set) -->
+            <div>
+                <span class="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Username (Permanen)</span>
+                <div class="px-4 py-3 rounded-2xl bg-gray-50 border border-gray-100 text-sm font-mono text-gray-500 select-all">
+                    {{ user.username }}
+                </div>
+            </div>
+
+            <!-- Save Button -->
+            <div class="pt-4 flex justify-end">
+                <button type="submit"
+                        class="btn-forest-primary py-3 px-6 rounded-2xl shadow-md hover:shadow-lg focus:outline-none transition-all text-sm tracking-wide">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Column: Change Password -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-5 flex flex-col justify-between">
+            <div>
+                <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3">Ganti Sandi</h3>
+                <p class="text-[11px] text-gray-400 mt-1 leading-normal">Kosongkan kolom di bawah jika Anda tidak ingin memperbarui password saat ini.</p>
+
+                <!-- New Password Input -->
+                <div class="mt-4">
+                    <label for="password" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Password Baru</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <input type="password" name="password" id="password"
+                               class="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Minimal 6 karakter">
+                    </div>
+                    {% if errors.password %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.password }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Password Confirmation Input -->
+                <div class="mt-4">
+                    <label for="password_confirm" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Konfirmasi Sandi</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                        </div>
+                        <input type="password" name="password_confirm" id="password_confirm"
+                               class="w-full pl-10 pr-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Ulangi password baru">
+                    </div>
+                    {% if errors.password_confirm %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.password_confirm }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="text-[10px] text-gray-400 text-center select-none pt-6 leading-normal">
+                Sandi wajib diganti berkala untuk mencegah kebocoran kredensial admin.
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

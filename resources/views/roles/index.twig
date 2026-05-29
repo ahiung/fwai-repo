@@ -1,0 +1,102 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Manajemen Peran{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Manajemen Peran</span>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Action Header -->
+    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 select-none">
+        <div>
+            <h2 class="text-xl font-bold text-gray-900 font-display">Matriks Hak Akses Peran</h2>
+            <p class="text-xs text-gray-400 mt-1">Kelola pembatasan akses operasional sistem secara modular dan granular.</p>
+        </div>
+        {% if can('add_roles') %}
+            <a href="{{ base_path }}/roles/add" class="inline-flex items-center space-x-2 btn-forest-primary py-2.5 px-5 rounded-2xl shadow-md hover:shadow-lg focus:outline-none transition-all text-xs tracking-wide">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Tambah Peran</span>
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- Table List -->
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100 text-gray-400 font-semibold uppercase text-[10px] tracking-wider select-none">
+                        <th class="py-4 px-6 w-1/4">Peran (Role)</th>
+                        <th class="py-4 px-6">Deskripsi</th>
+                        <th class="py-4 px-6 w-2/5">Matriks Izin Modul</th>
+                        <th class="py-4 px-6 text-right w-1/6">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for role in roles %}
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-5 px-6">
+                                <span class="font-bold text-gray-900 block font-display">{{ role.name }}</span>
+                                <span class="text-[10px] text-gray-400 mt-0.5 block">ID: #{{ role.id }}</span>
+                            </td>
+                            <td class="py-5 px-6 text-gray-500 text-xs leading-relaxed max-w-xs">
+                                {{ role.description | default('Tidak ada deskripsi.') }}
+                            </td>
+                            <td class="py-5 px-6">
+                                <div class="flex flex-wrap gap-1.5">
+                                    {% if role.id == 1 %}
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-[var(--forest-mist)] text-[var(--forest-medium)] uppercase tracking-wide border border-[var(--forest-light)]/30">
+                                            Akses Global Penuh
+                                        </span>
+                                    {% else %}
+                                        {% for permission in role.permissions %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[9px] font-bold bg-gray-100 text-gray-600 tracking-wider font-mono">
+                                                {{ permission.name }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-xs text-gray-400 italic">Tidak memiliki hak akses apa pun.</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="py-5 px-6 text-right">
+                                <div class="flex items-center justify-end space-x-1">
+                                    {% if can('edit_roles') %}
+                                        <a href="{{ base_path }}/roles/edit/{{ role.id }}" class="p-2 rounded-xl text-gray-500 hover:bg-[var(--forest-mist)] hover:text-[var(--forest-medium)] transition-all" title="Ubah Peran">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                    {% if can('delete_roles') and role.id != 1 %}
+                                        <!-- Delete using normal anchor but trigger safety check or post in production -->
+                                        <a href="{{ base_path }}/roles/delete/{{ role.id }}" 
+                                           onclick="return confirm('Apakah Anda yakin ingin menghapus peran ini? Tindakan ini tidak dapat dibatalkan.');"
+                                           class="p-2 rounded-xl text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all" title="Hapus Peran">
+                                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="py-12 px-6 text-center text-gray-400 font-semibold">
+                                Belum ada peran didefinisikan.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

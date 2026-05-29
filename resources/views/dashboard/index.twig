@@ -1,0 +1,152 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Dashboard Utama{% endblock %}
+
+{% block breadcrumbs %}
+    <span class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors cursor-pointer select-none">Utama</span> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Dashboard</span>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header Welcome Banner -->
+    <div class="bg-forest-gradient rounded-3xl p-8 text-white shadow-xl relative overflow-hidden select-none">
+        <div class="absolute right-0 bottom-0 top-0 w-1/3 opacity-10 pointer-events-none">
+            <svg class="h-full w-full" fill="currentColor" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <polygon points="50,0 100,0 100,100 0,100" />
+            </svg>
+        </div>
+        <div class="relative z-10">
+            <h1 class="text-3xl font-extrabold font-display">Selamat Datang di Portal Utama</h1>
+            <p class="text-gray-100 text-sm mt-2 max-w-xl leading-relaxed">
+                Anda masuk sebagai <span class="font-bold underline">{{ session.user.name }}</span> ({{ session.user.role_name }}). Melalui dashboard ini Anda memiliki otorisasi penuh untuk memantau aktivitas audit trail, performansi engine, serta administrasi rincian IAM.
+            </p>
+        </div>
+    </div>
+
+    <!-- Widgets Grid System (3 Stats Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Users Card -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Total Pengguna</span>
+                <span class="text-3xl font-extrabold text-gray-900 font-display block">{{ stats.users }}</span>
+                <span class="text-[10px] text-[var(--forest-light)] font-bold block">User Terdaftar di Sistem</span>
+            </div>
+            <div class="h-14 w-14 rounded-2xl bg-forest-gradient text-white flex items-center justify-center shadow-lg shadow-green-900/10">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Roles Card -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Matriks Peran</span>
+                <span class="text-3xl font-extrabold text-gray-900 font-display block">{{ stats.roles }}</span>
+                <span class="text-[10px] text-[var(--forest-light)] font-bold block">Peran Keamanan Granular</span>
+            </div>
+            <div class="h-14 w-14 rounded-2xl bg-forest-gradient text-white flex items-center justify-center shadow-lg shadow-green-900/10">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- Logs Card -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow flex items-center justify-between">
+            <div class="space-y-2">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider block">Log Sistem</span>
+                <span class="text-3xl font-extrabold text-gray-900 font-display block">{{ stats.logs }}</span>
+                <span class="text-[10px] text-[var(--forest-light)] font-bold block">Aktivitas CUD Audit Trail</span>
+            </div>
+            <div class="h-14 w-14 rounded-2xl bg-forest-gradient text-white flex items-center justify-center shadow-lg shadow-green-900/10">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Logs Panel -->
+    <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        <!-- Panel Header -->
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div class="flex flex-col">
+                <h3 class="font-bold text-gray-900 font-display text-base">Aktivitas Audit Trail Terbaru</h3>
+                <p class="text-xs text-gray-400 mt-0.5">Menampilkan 5 operasi CUD dan keamanan teranyar dari server.</p>
+            </div>
+            {% if can('view_audit_trails') %}
+                <a href="{{ base_path }}/audit-trails" class="text-xs font-semibold text-[var(--forest-medium)] hover:text-[var(--forest-darkest)] bg-[var(--forest-mist)] px-3 py-1.5 rounded-xl transition-all">
+                    Selengkapnya &rarr;
+                </a>
+            {% endif %}
+        </div>
+
+        <!-- Table Grid -->
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100 text-gray-400 font-semibold uppercase text-[10px] tracking-wider select-none">
+                        <th class="py-4 px-6">User</th>
+                        <th class="py-4 px-6">Tindakan</th>
+                        <th class="py-4 px-6">Modul</th>
+                        <th class="py-4 px-6">Deskripsi Log</th>
+                        <th class="py-4 px-6">Alamat IP</th>
+                        <th class="py-4 px-6">Waktu Log</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    {% for log in recent_logs %}
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-4 px-6 font-semibold text-gray-700">
+                                {{ log.user ? log.user.name : 'Sistem/Guest' }}
+                                <span class="block text-[10px] text-gray-400 font-normal mt-0.5">@{{ log.user ? log.user.username : 'anonymous' }}</span>
+                            </td>
+                            <td class="py-4 px-6">
+                                {% if log.action in ['CREATE', 'LOGIN_SUCCESS', 'STORE'] %}
+                                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-bold bg-green-50 text-green-600 uppercase tracking-wide select-none">
+                                        {{ log.action }}
+                                    </span>
+                                {% elseif log.action in ['UPDATE', 'EDIT'] %}
+                                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-bold bg-yellow-50 text-yellow-600 uppercase tracking-wide select-none">
+                                        {{ log.action }}
+                                    </span>
+                                {% elseif log.action in ['DELETE', 'LOGIN_FAILED', 'LOGOUT'] %}
+                                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-bold bg-red-50 text-red-600 uppercase tracking-wide select-none">
+                                        {{ log.action }}
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-1.5 rounded-full text-xs font-bold bg-gray-50 text-gray-600 uppercase tracking-wide select-none">
+                                        {{ log.action }}
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="py-4 px-6 text-gray-500 font-medium">
+                                {{ log.module }}
+                            </td>
+                            <td class="py-4 px-6 text-gray-500 max-w-sm truncate" title="{{ log.description }}">
+                                {{ log.description }}
+                            </td>
+                            <td class="py-4 px-6 text-gray-400 font-mono text-xs">
+                                {{ log.ip_address }}
+                            </td>
+                            <td class="py-4 px-6 text-gray-400 font-medium">
+                                {{ format_tanggal(log.created_at) }}
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="py-12 px-6 text-center text-gray-400 font-semibold">
+                                Belum ada aktivitas audit trail tercatat di database.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

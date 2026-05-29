@@ -1,0 +1,129 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Ubah Peran - {{ role.name }}{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <a href="{{ base_path }}/roles" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Manajemen Peran</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Ubah Peran</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <form action="{{ base_path }}/roles/edit/{{ role.id }}" method="POST" autocomplete="off" class="space-y-6">
+        <!-- Main Form Fields -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-5">
+            <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3">Informasi Peran</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Name Input -->
+                <div class="md:col-span-1">
+                    <label for="name" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Peran</label>
+                    <input type="text" name="name" id="name" value="{{ old.name | default(role.name) }}" required
+                           {% if role.id == 1 %} readonly class="w-full px-4 py-3 rounded-2xl bg-gray-50 border border-gray-100 text-sm text-gray-400 select-none font-semibold" {% else %} class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800" {% endif %}
+                           placeholder="Misal: Manager, Staff">
+                    {% if errors.name %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.name }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Description Input -->
+                <div class="md:col-span-2">
+                    <label for="description" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Deskripsi Fungsi Peran</label>
+                    <input type="text" name="description" id="description" value="{{ old.description | default(role.description) }}"
+                           class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                           placeholder="Jelaskan pembatasan tanggung jawab peran ini">
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkbox Permission Matrix Grid -->
+        <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
+            <div>
+                <h3 class="font-bold text-gray-900 font-display text-base">Matriks Otorisasi Granular (CRUD)</h3>
+                <p class="text-xs text-gray-400 mt-1">Centang perizinan modul yang diperbolehkan diakses oleh peran ini.</p>
+            </div>
+
+            {% if role.id == 1 %}
+                <div class="p-6 rounded-2xl bg-[var(--forest-mist)] border border-[var(--forest-light)]/30 text-[var(--forest-darkest)] text-xs font-semibold leading-relaxed">
+                    Peran Superadmin utama memiliki hak akses global penuh (All Bypass) secara permanen. Anda tidak dapat menyesuaikan matriks hak akses untuk peran ini secara individual.
+                </div>
+            {% else %}
+                <div class="border border-gray-100 rounded-2xl overflow-hidden">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-100 text-gray-400 font-bold uppercase text-[9px] tracking-wider select-none">
+                                <th class="py-3.5 px-6">Modul Fitur</th>
+                                <th class="py-3.5 px-4 text-center">BACA / LIHAT (Read)</th>
+                                <th class="py-3.5 px-4 text-center">TAMBAH (Create)</th>
+                                <th class="py-3.5 px-4 text-center">UBAH (Update)</th>
+                                <th class="py-3.5 px-4 text-center">HAPUS (Delete)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- Module: Users -->
+                            <tr class="hover:bg-gray-50/30 transition-colors">
+                                <td class="py-4 px-6 font-semibold text-gray-700 text-xs">Manajemen Pengguna (Users)</td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="1" {% if 1 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="2" {% if 2 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="3" {% if 3 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="4" {% if 4 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                            </tr>
+                            <!-- Module: Roles -->
+                            <tr class="hover:bg-gray-50/30 transition-colors">
+                                <td class="py-4 px-6 font-semibold text-gray-700 text-xs">Manajemen Peran & Otorisasi (Roles)</td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="5" {% if 5 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="6" {% if 6 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="7" {% if 7 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="8" {% if 8 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                            </tr>
+                            <!-- Module: Audit Trail -->
+                            <tr class="hover:bg-gray-50/30 transition-colors">
+                                <td class="py-4 px-6 font-semibold text-gray-700 text-xs">Log Aktivitas Sistem (Audit Trail)</td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="9" {% if 9 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center text-gray-300 font-bold select-none">-</td>
+                                <td class="py-4 px-4 text-center text-gray-300 font-bold select-none">-</td>
+                                <td class="py-4 px-4 text-center text-gray-300 font-bold select-none">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex items-center justify-end space-x-3 select-none">
+            <a href="{{ base_path }}/roles" class="px-5 py-2.5 rounded-2xl border border-gray-200 text-gray-500 hover:bg-gray-50 text-xs font-bold transition-all">
+                Batal
+            </a>
+            <button type="submit"
+                    class="btn-forest-primary py-2.5 px-6 rounded-2xl shadow-md hover:shadow-lg focus:outline-none transition-all text-xs tracking-wide">
+                Simpan Peran
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

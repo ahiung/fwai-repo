@@ -1,0 +1,26 @@
+# Local environment configuration (Secrets)
+.env
+
+# Dependencies (Managed by Composer)
+/vendor/
+
+# Application Logs and Cache directories
+/var/log/*
+/var/cache/*
+!/var/log/.gitkeep
+!/var/cache/.gitkeep
+
+# IDE / Editor files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
