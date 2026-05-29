@@ -49,6 +49,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Intercept sidebar and dropdown menu link clicks to show loading overlay on slow connections
+    const menuLinks = document.querySelectorAll('.main-sidebar nav a, #profile-dropdown-menu a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            // Check if it is a valid navigation url and not an action trigger or anchor link
+            if (href && href !== '#' && !href.startsWith('javascript:') && !link.hasAttribute('onclick')) {
+                let title = 'Memuat Halaman...';
+                let text = 'Sedang memindahkan menu, mohon tunggu';
+                if (href.includes('/logout')) {
+                    title = 'Keluar Sesi...';
+                    text = 'Sedang mengakhiri sesi Anda dengan aman';
+                }
+                window.showLoading(title, text);
+            }
+        });
+    });
+
     // Axios CSRF Token Injection setup if axios is loaded
     if (typeof axios !== 'undefined') {
         const csrfTokenEl = document.querySelector('meta[name="csrf-token"]');
