@@ -84,6 +84,11 @@ Buatkan di `resources/views/[nama_entitas_huruf_kecil]/`:
     2.  `resources/views/roles/edit.twig`
     Hal ini penting agar izin (permission) baru tersebut dapat diatur dan dicentang oleh peran non-Superadmin lainnya.
 
+**I. Integrasi Menu Navigasi Sidebar (WAJIB)**
+*   Daftarkan secara manual tautan/menu navigasi untuk modul baru di dalam berkas master layout:
+    -   `resources/views/layouts/base.twig`
+    Letakkan di bawah kategori navigasi yang sesuai (atau buat kategori baru jika relevan) dan lindungi dengan fungsi `{% if can('view_[nama_modul]') %}` untuk menjamin keamanan akses menu di antarmuka pengguna.
+
 ## Execution Rules
 *   **Contextual Yapping (Allowed):** AI diperbolehkan memberikan penjelasan singkat mengenai cara mengintegrasikan modul, cara memasang route, cara mendaftarkan Service di DI container, dsb.
 *   **Complete Code:** Kode harus utuh dan fungsional.
