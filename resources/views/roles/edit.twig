@@ -108,6 +108,22 @@
                                 <td class="py-4 px-4 text-center text-gray-300 font-bold select-none">-</td>
                                 <td class="py-4 px-4 text-center text-gray-300 font-bold select-none">-</td>
                             </tr>
+                            <!-- Module: Kantor Cabang -->
+                            <tr class="hover:bg-gray-50/30 transition-colors">
+                                <td class="py-4 px-6 font-semibold text-gray-700 text-xs">Manajemen Kantor Cabang (Branch Offices)</td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="10" {% if 10 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="11" {% if 11 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="12" {% if 12 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                                <td class="py-4 px-4 text-center">
+                                    <input type="checkbox" name="permissions[]" value="13" {% if 13 in role_permission_ids %} checked {% endif %} class="rounded text-[var(--forest-medium)] focus:ring-[var(--forest-light)] h-4.5 w-4.5 border-gray-300 cursor-pointer">
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
