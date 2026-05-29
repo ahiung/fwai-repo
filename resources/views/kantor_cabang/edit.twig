@@ -1,0 +1,236 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Ubah Kantor Cabang{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <a href="{{ base_path }}/kantor-cabang" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Kantor Cabang</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Ubah Kantor</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <form action="{{ base_path }}/kantor-cabang/edit/{{ office.id }}" method="POST" autocomplete="off" onsubmit="window.showLoading()" class="space-y-6">
+        <!-- Two Column Layout Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Card: Kantor Information -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-gray-50 pb-3">
+                    <h3 class="font-bold text-gray-900 font-display text-base">Informasi Utama Kantor</h3>
+                    <span class="text-[10px] bg-[var(--forest-mist)] text-[var(--forest-medium)] px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider select-none">ID: #{{ office.id }}</span>
+                </div>
+
+                <!-- Office Code Input -->
+                <div>
+                    <label for="office_code" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kode Kantor</label>
+                    <input type="text" name="office_code" id="office_code" value="{{ old.office_code | default(office.office_code) }}" required
+                           class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                           placeholder="Masukkan kode unik (misal: KTR-001, BR-01)">
+                    {% if errors.office_code %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.office_code }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Office Name Input -->
+                <div>
+                    <label for="name" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Nama Kantor / Cabang</label>
+                    <input type="text" name="name" id="name" value="{{ old.name | default(office.name) }}" required
+                           class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                           placeholder="Masukkan nama kantor cabang">
+                    {% if errors.name %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.name }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Office Type Input -->
+                <div>
+                    <label for="office_type" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Tipe Kantor</label>
+                    {% set currentType = old.office_type | default(office.office_type) %}
+                    <select name="office_type" id="office_type" required class="w-full">
+                        <option value="branch" {% if currentType == 'branch' %} selected {% endif %}>Kantor Cabang (Branch)</option>
+                        <option value="head" {% if currentType == 'head' %} selected {% endif %}>Kantor Pusat (Head Office)</option>
+                        <option value="remote" {% if currentType == 'remote' %} selected {% endif %}>Kantor Cabang Pembantu (Remote)</option>
+                    </select>
+                    {% if errors.office_type %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.office_type }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Status Input -->
+                <div>
+                    <label for="status" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Status Operasional</label>
+                    {% set currentStatus = old.status | default(office.status) %}
+                    <select name="status" id="status" required class="w-full">
+                        <option value="active" {% if currentStatus == 'active' %} selected {% endif %}>Aktif</option>
+                        <option value="inactive" {% if currentStatus == 'inactive' %} selected {% endif %}>Nonaktif</option>
+                    </select>
+                    {% if errors.status %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.status }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Manager Input (Choices.js) -->
+                <div>
+                    <label for="manager_id" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pimpinan Kantor (Manager)</label>
+                    {% set currentManager = old.manager_id | default(office.manager_id) %}
+                    <select name="manager_id" id="manager_id" class="w-full">
+                        <option value="">Pilih Manager...</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}" {% if currentManager == user.id %} selected {% endif %}>{{ user.name }} ({{ user.username }})</option>
+                        {% endfor %}
+                    </select>
+                    {% if errors.manager_id %}
+                        <p class="text-red-500 text-xs mt-1.5 font-semibold flex items-center">
+                            <svg class="h-3.5 w-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                            {{ errors.manager_id }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Card: Contact & Location Info -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-5">
+                <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3">Kontak & Lokasi Geografis</h3>
+
+                <!-- Phone Input & Email Input (Row) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="phone" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Telepon</label>
+                        <input type="text" name="phone" id="phone" value="{{ old.phone | default(office.phone) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Contoh: 021-123456">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Kantor</label>
+                        <input type="email" name="email" id="email" value="{{ old.email | default(office.email) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="cabang@email.com">
+                    </div>
+                </div>
+
+                <!-- Address Input -->
+                <div>
+                    <label for="address" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Alamat Lengkap</label>
+                    <textarea name="address" id="address" rows="3"
+                              class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                              placeholder="Masukkan jalan, RT/RW, nomor gedung...">{{ old.address | default(office.address) }}</textarea>
+                </div>
+
+                <!-- City & Province & Postal Code -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label for="city" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kota</label>
+                        <input type="text" name="city" id="city" value="{{ old.city | default(office.city) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Kota">
+                    </div>
+                    <div>
+                        <label for="province" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Provinsi</label>
+                        <input type="text" name="province" id="province" value="{{ old.province | default(office.province) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Provinsi">
+                    </div>
+                    <div>
+                        <label for="postal_code" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Kode Pos</label>
+                        <input type="text" name="postal_code" id="postal_code" value="{{ old.postal_code | default(office.postal_code) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="12345">
+                    </div>
+                </div>
+
+                <!-- Country -->
+                <div>
+                    <label for="country" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Negara</label>
+                    <input type="text" name="country" id="country" value="{{ old.country | default(office.country) | default('Indonesia') }}" required
+                           class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800">
+                </div>
+
+                <!-- Coordinates Lat/Lng -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="latitude" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Latitude</label>
+                        <input type="number" step="any" name="latitude" id="latitude" value="{{ old.latitude | default(office.latitude) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Contoh: -6.2088">
+                        {% if errors.latitude %}
+                            <p class="text-red-500 text-xs mt-1.5 font-semibold">{{ errors.latitude }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <label for="longitude" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Longitude</label>
+                        <input type="number" step="any" name="longitude" id="longitude" value="{{ old.longitude | default(office.longitude) }}"
+                               class="w-full px-4 py-3 rounded-2xl border border-gray-200 focus:outline-none text-sm transition-all text-gray-800"
+                               placeholder="Contoh: 106.8456">
+                        {% if errors.longitude %}
+                            <p class="text-red-500 text-xs mt-1.5 font-semibold">{{ errors.longitude }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex items-center justify-end space-x-3 select-none">
+            <a href="{{ base_path }}/kantor-cabang" class="px-5 py-2.5 rounded-2xl border border-gray-200 text-gray-500 hover:bg-gray-50 text-xs font-bold transition-all">
+                Batal
+            </a>
+            <button type="submit"
+                    class="btn-forest-primary py-2.5 px-6 rounded-2xl shadow-md hover:shadow-lg focus:outline-none transition-all text-xs tracking-wide">
+                Simpan Perubahan
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize Choices.js on manager select field
+        const selectManager = document.getElementById('manager_id');
+        if (selectManager && typeof Choices !== 'undefined') {
+            new Choices(selectManager, {
+                searchEnabled: true,
+                itemSelectText: '',
+                shouldSort: false,
+                removeItemButton: true,
+                placeholderValue: 'Pilih Manager...'
+            });
+        }
+
+        // Initialize Choices.js on office type
+        const selectType = document.getElementById('office_type');
+        if (selectType && typeof Choices !== 'undefined') {
+            new Choices(selectType, {
+                searchEnabled: false,
+                itemSelectText: '',
+                shouldSort: false
+            });
+        }
+
+        // Initialize Choices.js on status
+        const selectStatus = document.getElementById('status');
+        if (selectStatus && typeof Choices !== 'undefined') {
+            new Choices(selectStatus, {
+                searchEnabled: false,
+                itemSelectText: '',
+                shouldSort: false
+            });
+        }
+    });
+</script>
+{% endblock %}

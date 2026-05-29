@@ -1,0 +1,209 @@
+{% extends 'layouts/base.twig' %}
+
+{% block title %}Detail Kantor Cabang{% endblock %}
+
+{% block breadcrumbs %}
+    <a href="{{ base_path }}/dashboard" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Utama</a> 
+    <span class="text-gray-300">/</span> 
+    <a href="{{ base_path }}/kantor-cabang" class="text-gray-400 hover:text-[var(--forest-accent)] transition-colors select-none">Kantor Cabang</a> 
+    <span class="text-gray-300">/</span> 
+    <span class="text-gray-800 font-semibold font-display select-none">Detail Kantor</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Header Summary Card -->
+    <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 select-none">
+        <div class="flex items-center space-x-4">
+            <div class="h-14 w-14 rounded-2xl bg-[var(--forest-mist)] text-[var(--forest-medium)] flex items-center justify-center font-bold text-xl font-display border border-[var(--forest-light)]/20 shadow-sm">
+                {{ office.name | slice(0, 2) | upper }}
+            </div>
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 font-display leading-tight">{{ office.name }}</h2>
+                <div class="flex items-center space-x-2 mt-1">
+                    <span class="text-xs text-gray-400 font-bold uppercase tracking-wider">{{ office.office_code }}</span>
+                    <span class="text-gray-300">•</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide border 
+                        {% if office.office_type == 'head' %} bg-purple-50 text-purple-700 border-purple-200 
+                        {% elseif office.office_type == 'branch' %} bg-blue-50 text-blue-700 border-blue-200 
+                        {% else %} bg-yellow-50 text-yellow-700 border-yellow-200 {% endif %}">
+                        {{ office.office_type }}
+                    </span>
+                    <span class="text-gray-300">•</span>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold border {% if office.status == 'active' %} bg-green-50 text-green-700 border-green-200 {% else %} bg-red-50 text-red-700 border-red-200 {% endif %} uppercase tracking-wide">
+                        {{ office.status == 'active' ? 'Aktif' : 'Nonaktif' }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            {% if can('edit_kantor_cabang') %}
+                <a href="{{ base_path }}/kantor-cabang/edit/{{ office.id }}" class="inline-flex items-center space-x-2 btn-forest-primary py-2 px-4 rounded-xl shadow-md hover:shadow-lg focus:outline-none transition-all text-xs font-semibold">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                    <span>Ubah Kantor</span>
+                </a>
+            {% endif %}
+            <a href="{{ base_path }}/kantor-cabang" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-500 hover:bg-gray-50 text-xs font-bold transition-all">
+                Kembali
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Detail Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Left 2 Columns: Office Details -->
+        <div class="md:col-span-2 bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-6">
+            <div>
+                <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3 mb-4">Informasi Detail Kantor</h3>
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kode Kantor</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.office_code }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nama Kantor</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.name }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tipe Kantor</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5 capitalize">{{ office.office_type }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">
+                            <span class="inline-flex items-center text-xs font-bold {% if office.status == 'active' %} text-green-600 {% else %} text-red-600 {% endif %}">
+                                <span class="h-2 w-2 rounded-full {% if office.status == 'active' %} bg-green-500 {% else %} bg-red-500 {% endif %} mr-1.5"></span>
+                                {{ office.status == 'active' ? 'Aktif' : 'Nonaktif' }}
+                            </span>
+                        </dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alamat Lengkap</dt>
+                        <dd class="text-sm font-medium text-gray-700 mt-0.5 leading-relaxed">{{ office.address | default('-') }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kota / Kabupaten</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.city | default('-') }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Provinsi</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.province | default('-') }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Kode Pos</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.postal_code | default('-') }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Negara</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5">{{ office.country | default('Indonesia') }}</dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div>
+                <h3 class="font-bold text-gray-900 font-display text-base border-b border-gray-50 pb-3 mb-4">Kontak Resmi</h3>
+                <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nomor Telepon</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5 flex items-center">
+                            <svg class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                            </svg>
+                            {{ office.phone | default('-') }}
+                        </dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Alamat Email</dt>
+                        <dd class="text-sm font-semibold text-gray-800 mt-0.5 flex items-center">
+                            <svg class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            {% if office.email %}
+                                <a href="mailto:{{ office.email }}" class="text-[var(--forest-accent)] hover:underline">{{ office.email }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Right 1 Column: Manager Profile & Geolocation Info -->
+        <div class="space-y-6">
+            <!-- Manager Profile Card -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm flex flex-col items-center text-center space-y-4">
+                <h3 class="font-bold text-gray-900 font-display text-sm border-b border-gray-50 pb-2 w-full select-none">Kepala Kantor / Manager</h3>
+                
+                {% if office.manager %}
+                    <div class="h-16 w-16 rounded-full bg-forest-gradient text-white flex items-center justify-center font-bold text-xl shadow-md font-display select-none">
+                        {{ office.manager.name | slice(0, 2) | upper }}
+                    </div>
+                    <div>
+                        <span class="font-bold text-gray-900 block font-display text-sm">{{ office.manager.name }}</span>
+                        <span class="text-xs text-gray-400 block mt-0.5">@{{ office.manager.username }}</span>
+                        <span class="text-[11px] text-gray-500 block mt-1">{{ office.manager.email }}</span>
+                    </div>
+                {% else %}
+                    <div class="h-16 w-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center font-bold text-xl select-none">
+                        ?
+                    </div>
+                    <span class="text-xs text-gray-400 italic">Pimpinan kantor belum ditentukan</span>
+                {% endif %}
+            </div>
+
+            <!-- Geolocation Card -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
+                <h3 class="font-bold text-gray-900 font-display text-sm border-b border-gray-50 pb-2 select-none">Geolokasi (Koordinat)</h3>
+                <dl class="space-y-3">
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Latitude</dt>
+                        <dd class="text-xs font-mono font-bold text-gray-800 mt-0.5">{{ office.latitude | default('-') }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Longitude</dt>
+                        <dd class="text-xs font-mono font-bold text-gray-800 mt-0.5">{{ office.longitude | default('-') }}</dd>
+                    </div>
+                </dl>
+                
+                {% if office.latitude and office.longitude %}
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ office.latitude }},{{ office.longitude }}" target="_blank"
+                       class="inline-flex items-center justify-center w-full btn-forest-secondary py-2 px-4 rounded-xl text-xs font-bold tracking-wide">
+                        <svg class="h-4 w-4 mr-2 text-[var(--forest-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Buka Google Maps
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Metadata System Card -->
+            <div class="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-3 select-none">
+                <h3 class="font-bold text-gray-900 font-display text-sm border-b border-gray-50 pb-2">Informasi Sistem</h3>
+                <dl class="space-y-2.5 text-[11px]">
+                    <div class="flex justify-between">
+                        <dt class="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Pembuat:</dt>
+                        <dd class="text-gray-700 font-semibold">{{ office.creator.name | default('Sistem') }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Dibuat Pada:</dt>
+                        <dd class="text-gray-500 font-medium">{{ format_tanggal(office.created_at, 'd-m-Y H:i') }}</dd>
+                    </div>
+                    <div class="flex justify-between border-t border-gray-50 pt-2">
+                        <dt class="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Pengubah Akhir:</dt>
+                        <dd class="text-gray-700 font-semibold">{{ office.updater.name | default('Sistem') }}</dd>
+                    </div>
+                    <div class="flex justify-between">
+                        <dt class="text-gray-400 font-bold uppercase tracking-wider text-[9px]">Diubah Pada:</dt>
+                        <dd class="text-gray-500 font-medium">{{ format_tanggal(office.updated_at, 'd-m-Y H:i') }}</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

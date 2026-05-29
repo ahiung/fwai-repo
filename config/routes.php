@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Slim\App;
 use App\Controllers\AuthController;
 use App\Controllers\DashboardController;
+use App\Controllers\KantorCabangController;
 use App\Controllers\ProfileController;
 use App\Controllers\RoleController;
 use App\Controllers\UserController;
@@ -91,6 +92,35 @@ return function (App $app) {
         
     $app->get('/roles/delete/{id}', [RoleController::class, 'delete'])
         ->add(new RbacMiddleware($flash, 'delete_roles'))
+        ->add(new AuthMiddleware($flash));
+
+    // 6. RBAC Granular Protected Modul: Kantor Cabang
+    $app->get('/kantor-cabang', [KantorCabangController::class, 'index'])
+        ->add(new RbacMiddleware($flash, 'view_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+        
+    $app->get('/kantor-cabang/add', [KantorCabangController::class, 'create'])
+        ->add(new RbacMiddleware($flash, 'add_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+        
+    $app->post('/kantor-cabang/add', [KantorCabangController::class, 'store'])
+        ->add(new RbacMiddleware($flash, 'add_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+
+    $app->get('/kantor-cabang/view/{id}', [KantorCabangController::class, 'show'])
+        ->add(new RbacMiddleware($flash, 'view_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+        
+    $app->get('/kantor-cabang/edit/{id}', [KantorCabangController::class, 'edit'])
+        ->add(new RbacMiddleware($flash, 'edit_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+        
+    $app->post('/kantor-cabang/edit/{id}', [KantorCabangController::class, 'update'])
+        ->add(new RbacMiddleware($flash, 'edit_kantor_cabang'))
+        ->add(new AuthMiddleware($flash));
+        
+    $app->get('/kantor-cabang/delete/{id}', [KantorCabangController::class, 'delete'])
+        ->add(new RbacMiddleware($flash, 'delete_kantor_cabang'))
         ->add(new AuthMiddleware($flash));
 
     // 6. RBAC Granular Protected Modul: Audit Trail System Logs (Inline implementation)
